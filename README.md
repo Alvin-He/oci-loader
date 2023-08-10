@@ -13,3 +13,5 @@ Usuage:
 4. wait for the build to finish and an executable called oci_loader would be generated in <REPO DIRECTORY>/target/release/
 Optional: Configure your OS to start this program on start up so it's always running
 ```
+
+NOTE: It will take about a minute or 2 for the loader to ramp up. So don't worry about it if your memory usuage don't instantly hit 20% 
