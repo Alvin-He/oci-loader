@@ -1,0 +1,20 @@
+[package]
+name = "constant_load"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+
+[[bin]]
+name="constantload"
+path="src/main.rs"
+
+[features]
+logging = []
+
+[dependencies]
+sysinfo = "0.29.7"
+tokio = {version = "1.30.0", features = ["full"]}
+
+
