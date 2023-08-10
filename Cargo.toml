@@ -7,11 +7,11 @@ edition = "2021"
 
 
 [[bin]]
-name="constantload"
+name="oci_loader"
 path="src/main.rs"
 
 [features]
-logging = []
+# logging = [] # uncomment this to enable logging
 
 [dependencies]
 sysinfo = "0.29.7"
