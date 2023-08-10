@@ -2,7 +2,7 @@
 
 Prevents oracle from reclaiming/deleteing your idle instances throught loading memory. 
 
-This script will automatically hold up 20% of your instance's memory, satisifying the requirements by orcle.
+This script will automatically hold up 20% of your instance's memory, satisifying the requirements by orcle.  
 When other applications need those memory, it will automatically relase/reduce the memory held by the loader. 
 
 Usuage: 
