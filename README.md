@@ -10,6 +10,7 @@ When other applications need those memory, it will automatically relase/reduce t
 2. download/git clone this repo: `git clone https://github.com/Alvin-He/oci-loader`
 3. open the location that you downloaded the repo in, run: `cargo build -r`
 4. wait for the build to finish and an executable called oci_loader would be generated in `<REPO DIRECTORY>/target/release/`
+5. just invoke that executable directly for the loader to run, to exit you have to CTRL+C or kill it in a task manager
 
 ##### Optional: You can configure your OS to start this program on start up so it's always running
 
