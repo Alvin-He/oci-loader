@@ -11,7 +11,7 @@ name="oci_loader"
 path="src/main.rs"
 
 [features]
-# logging = [] # uncomment this to enable logging
+logging = [] # uncomment this to enable logging
 
 [dependencies]
 sysinfo = "0.29.7"
