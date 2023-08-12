@@ -9,7 +9,7 @@
 //////////////
 
 // The target percentage that this loader is trying to hit, decimal form percentages only
-pub const MEM_TARGET_PERCENTAGE: f64 = 0.6; // 20% usage
+pub const MEM_TARGET_PERCENTAGE: f64 = 0.2; // 20% usage
 
 // Max update size per cycle, used to spread out the load on the cpu due to allocations 
 // increase to make the system more responsive (if you have applications that may very quickly spike in memory usage)
