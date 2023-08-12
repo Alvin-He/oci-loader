@@ -33,29 +33,27 @@ impl SmartMemoryHold {
 
         // check if we need to adjust the memory allocation
         let memory_used_percent: f64 = (system.used_memory() as f64) / (system.total_memory() as f64);
-        // println!("Memory % currently used: {}", memory_used_percent); 
-        let mut new_allocation_amount: i64;
-        if memory_used_percent < MEM_TARGET_PERCENTAGE {
-            let amount_targeted: f64 = (MEM_TARGET_PERCENTAGE - memory_used_percent) * (system.available_memory() as f64);
-            new_allocation_amount = if (amount_targeted as i64).abs() < MEM_MAX_ALLOC_PER_UPDATE_BYTES { amount_targeted as i64  } else { MEM_MAX_ALLOC_PER_UPDATE_BYTES };
-        } else if memory_used_percent > MEM_TARGET_PERCENTAGE {
-            let amount_targeted: f64 = (memory_used_percent - MEM_TARGET_PERCENTAGE) * (system.available_memory() as f64);
-            new_allocation_amount = if (amount_targeted as i64).abs() < MEM_MAX_ALLOC_PER_UPDATE_BYTES { amount_targeted as i64  } else { -MEM_MAX_ALLOC_PER_UPDATE_BYTES }; // default is negated as amount_targeted is negative 
-        } else {
-            println!("Current System Memory Usage equals to: {}, No change", MEM_TARGET_PERCENTAGE);
+        let percentage_changed: f64 = MEM_TARGET_PERCENTAGE - memory_used_percent;
+
+        // converting to integer percentage as we don't want the precision of float
+        if percentage_changed.abs() <= MEM_MIN_CHANGED_BEFORE_REALLOC_PERCENTAGE {
+            println!("Current System Memory Deviation: {}, less than the reallocation threshold, no change", percentage_changed);
             return; 
         } 
 
+        let amount_targeted: f64 = percentage_changed * (system.available_memory() as f64);
 
-        let current_holding_amount: i64 = self.layout.size() as i64; 
+        let mut new_allocation_amount: i64 = if (amount_targeted as i64).abs() > MEM_MAX_ALLOC_PER_UPDATE_BYTES {
+                if amount_targeted.is_sign_negative() { -MEM_MAX_ALLOC_PER_UPDATE_BYTES } else { MEM_MAX_ALLOC_PER_UPDATE_BYTES }
+            } else {
+                amount_targeted as i64
+            };
+        
+        // subtract one byte off as that's needed to keep the buffer existing 
+        let current_holding_amount: i64 = self.layout.size() as i64 - 1; 
         let new_holding_amount: i64 = current_holding_amount + new_allocation_amount;
         if new_holding_amount <= 0 {
-            new_allocation_amount = -current_holding_amount
-        }
-
-        if (new_allocation_amount.abs() as f64) < (system.available_memory() as f64) * MIN_PERCENT_CHANGED_BEFORE_REALLOC {
-            println!("Memory changed too small to satisfy a reallocation");
-            return;
+            new_allocation_amount = -current_holding_amount;
         }
 
         // println!("Change to be applied: {}", new_allocation_amount);
@@ -63,7 +61,7 @@ impl SmartMemoryHold {
         self.reallocate_mem_buffer(new_allocation_amount); 
         // adjust accordingly 
 
-        println!("Current System Memory Usage: {}, Current Memory Held: {} MB, Next Target Amount: {} MB", memory_used_percent, (current_holding_amount as f64) / 1000.0 / 1000.0, (new_allocation_amount as f64) / 1000.0 / 1000.0); 
+        println!("Current System Memory Usage: {}, Current Memory Held: {} MB, Next Target Amount: {} MB", memory_used_percent, current_holding_amount / 1000 / 1000, new_allocation_amount / 1000 / 1000); 
     }
     
     fn reallocate_mem_buffer(&mut self, amount_changed_bytes: i64) {

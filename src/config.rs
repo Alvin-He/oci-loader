@@ -18,5 +18,5 @@ pub const MEM_MAX_ALLOC_PER_UPDATE_BYTES: i64 = 100 * 1000 * 1000; // 100MB
 
 // How much the memory usage is allowed to deviate from MEM_TARGET_PERCENTAGE
 // decreasing this too low could cause constant small allocations due to floating point math inaccuracies and could cause ±5% memory leaks  
-pub const MIN_PERCENT_CHANGED_BEFORE_REALLOC: f64 = 0.01; // ±1% buffer
+pub const MEM_MIN_CHANGED_BEFORE_REALLOC_PERCENTAGE: f64 = 0.01; // ±1% buffer
 
