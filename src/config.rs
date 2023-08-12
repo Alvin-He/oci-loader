@@ -2,6 +2,7 @@
 // This is already tuned for the limits as of 08/12/2023, only edit if you know what you are doing  
 
 // WARNING: NEGATIVE VALUES = undefined behavior
+// Percentages GREATER THAN 1 will also cause a full memory leak / system memory exhaustion 
 
 //////////////
 /// Memory ///
