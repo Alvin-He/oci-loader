@@ -32,14 +32,14 @@ impl SmartMemoryHold {
         }
 
         // check if we need to adjust the memory allocation
-        let memory_used_percent: i64 = ((system.used_memory() as f64) / (system.total_memory() as f64) * 100.0) as i64;
+        let memory_used_percent: f64 = (system.used_memory() as f64) / (system.total_memory() as f64);
         // println!("Memory % currently used: {}", memory_used_percent); 
         let mut new_allocation_amount: i64;
         if memory_used_percent < MEM_TARGET_PERCENTAGE {
-            let amount_targeted: f64 = ((MEM_TARGET_PERCENTAGE - memory_used_percent) as f64) * (1.0/100.0) * (system.available_memory() as f64);
+            let amount_targeted: f64 = (MEM_TARGET_PERCENTAGE - memory_used_percent) * (system.available_memory() as f64);
             new_allocation_amount = if (amount_targeted as i64).abs() < MEM_MAX_ALLOC_PER_UPDATE_BYTES { amount_targeted as i64  } else { MEM_MAX_ALLOC_PER_UPDATE_BYTES };
         } else if memory_used_percent > MEM_TARGET_PERCENTAGE {
-            let amount_targeted: f64 = ((memory_used_percent - MEM_TARGET_PERCENTAGE) as f64) * (1.0/100.0) * (system.available_memory() as f64);
+            let amount_targeted: f64 = (memory_used_percent - MEM_TARGET_PERCENTAGE) * (system.available_memory() as f64);
             new_allocation_amount = if (amount_targeted as i64).abs() < MEM_MAX_ALLOC_PER_UPDATE_BYTES { amount_targeted as i64  } else { -MEM_MAX_ALLOC_PER_UPDATE_BYTES }; // default is negated as amount_targeted is negative 
         } else {
             println!("Current System Memory Usage equals to: {}, No change", MEM_TARGET_PERCENTAGE);
@@ -49,13 +49,11 @@ impl SmartMemoryHold {
 
         let current_holding_amount: i64 = self.layout.size() as i64; 
         let new_holding_amount: i64 = current_holding_amount + new_allocation_amount;
-        if new_holding_amount >= MEM_MAX_HOLD_BYTES {
-            new_allocation_amount = new_allocation_amount - (new_holding_amount - MEM_MAX_HOLD_BYTES); 
-        } else if new_holding_amount <= 0 {
+        if new_holding_amount <= 0 {
             new_allocation_amount = -current_holding_amount
         }
 
-        if new_allocation_amount.abs() < MIN_BYTES_CHANGED_BEFORE_REALLOC_BYTES {
+        if (new_allocation_amount.abs() as f64) < (system.available_memory() as f64) * MIN_PERCENT_CHANGED_BEFORE_REALLOC {
             println!("Memory changed too small to satisfy a reallocation");
             return;
         }

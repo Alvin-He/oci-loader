@@ -15,11 +15,12 @@
 // use std::thread; 
 use tokio::time::{self, Duration};
 use sysinfo::{System, SystemExt}; 
-#[macro_use]
-mod extera;
+// #[macro_use("println")]
+// mod extera;
 mod memory;
-use crate::memory::{SmartMemoryHold}; 
+use crate::memory::SmartMemoryHold; 
 mod config;
+
 
 #[tokio::main]
 async fn main() {
@@ -35,5 +36,5 @@ async fn main() {
         time::sleep(Duration::from_secs(update_interval_time_secs)).await;
     }; 
 }
-
+ 
 
